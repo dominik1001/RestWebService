@@ -10,7 +10,13 @@ public class Transaction {
 
     private Transaction parent;
 
+    public Transaction() {
+
+    }
+
     public Transaction(long id, double amount, String type, Transaction parent) {
+        this();
+
         this.id = id;
         this.amount = amount;
         this.type = type;
