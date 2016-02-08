@@ -14,19 +14,12 @@ import static org.junit.Assert.assertEquals;
 public class TransactionServiceTest extends JerseyTest {
 
     private void putTransaction(Transaction transaction) {
-        Response response = target("transactionservice/transaction/" + transaction.getId()).request().post(Entity.entity(transaction, MediaType.APPLICATION_JSON_TYPE));
-        System.out.println(response.readEntity(String.class));
+        target("transactionservice/transaction/" + transaction.getId()).request().post(Entity.entity(transaction, MediaType.APPLICATION_JSON_TYPE));
     }
 
     @Override
     protected Application configure() {
         return new ResourceConfig(TransactionService.class);
-    }
-
-    @Test
-    public void testHelloWorld() {
-        String response = target("transactionservice/hello").request().get(String.class);
-        assertEquals("Hello world!", response);
     }
 
     @Test
@@ -36,8 +29,8 @@ public class TransactionServiceTest extends JerseyTest {
 
         Response response = target("transactionservice/transaction/10").request().post(transactionEntity);
 
-        assertEquals("{ 'status': 'ok' }", response.readEntity(String.class));
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals("{\"status\":\"ok\"}", response.readEntity(String.class));
     }
 
     @Test
@@ -81,10 +74,13 @@ public class TransactionServiceTest extends JerseyTest {
 
     @Test
     public void testGetTransactionSum() {
+        putTransaction(new Transaction(10, 5000, "cars"));
+        putTransaction(new Transaction(11, 10000, "shopping"));
+
         Response response = target("transactionservice/sum/10").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals("[10]", response.readEntity(String.class));
+        assertEquals("{\"sum\":5000.0}", response.readEntity(String.class));
     }
 
 }

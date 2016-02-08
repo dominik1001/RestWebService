@@ -10,6 +10,8 @@ public class Transaction {
 
     private Transaction parent;
 
+    private Long parentId;
+
     public Transaction() {
 
     }

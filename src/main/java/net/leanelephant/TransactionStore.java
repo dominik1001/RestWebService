@@ -11,7 +11,11 @@ public class TransactionStore {
 
     private Map<String, List<Transaction>> transactionTypeMap = new HashMap<String, List<Transaction>>();
 
-    public void addTransaction(Transaction transaction) {
+    public void addTransaction(Transaction transaction) throws TransactionExistsException {
+        Transaction existingTransaction = transactionIdMap.get(transaction.getId());
+        if (existingTransaction != null) {
+            throw new TransactionExistsException(transaction);
+        }
         transactionIdMap.put(transaction.getId(), transaction);
 
         List<Transaction> typeList = transactionTypeMap.get(transaction.getType());
@@ -33,5 +37,13 @@ public class TransactionStore {
             result.add(transaction.getId());
         }
         return result;
+    }
+
+    public double getTransactionSum(Long transactionId) {
+        Transaction transaction = transactionIdMap.get(transactionId);
+        if (transaction != null) {
+            return transaction.getAmount();
+        }
+        return 0.0;
     }
 }
