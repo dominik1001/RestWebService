@@ -2,7 +2,7 @@ package net.leanelephant;
 
 public class Transaction {
 
-    private long id;
+    private Long id;
 
     private double amount;
 
@@ -14,7 +14,7 @@ public class Transaction {
 
     }
 
-    public Transaction(long id, double amount, String type, Transaction parent) {
+    public Transaction(Long id, double amount, String type, Transaction parent) {
         this();
 
         this.id = id;
@@ -23,15 +23,19 @@ public class Transaction {
         this.parent = parent;
     }
 
+    public Transaction(double amount, String type) {
+        this(null, amount, type, null);
+    }
+
     public Transaction(long id, double amount, String type) {
         this(id, amount, type, null);
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
