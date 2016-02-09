@@ -17,7 +17,7 @@ public class Transaction {
 
     private Long parentId;
 
-    private List<Transaction> childTransactions;
+    private final List<Transaction> childTransactions = new ArrayList<Transaction>();
 
     public Long getParentId() {
         return parentId;
@@ -31,13 +31,13 @@ public class Transaction {
 
     }
 
-    public Transaction(Long id, double amount, String type, Transaction parent) {
+    public Transaction(Long id, double amount, String type, Long parentId) {
         this();
 
         this.id = id;
         this.amount = amount;
         this.type = type;
-        this.parent = parent;
+        this.parentId = parentId;
     }
 
     public Transaction(double amount, String type) {
@@ -64,14 +64,6 @@ public class Transaction {
         this.amount = amount;
     }
 
-    @JsonIgnore
-    public double totalSum() {
-        double sum = amount;
-        for (Transaction transaction : childTransactions) {
-            sum += transaction.totalSum();
-        }
-        return sum;
-    }
 
     public String getType() {
         return type;
@@ -88,14 +80,18 @@ public class Transaction {
 
     public void setParent(Transaction parent) {
         this.parent = parent;
-        parent.addChildTransaction(this);
     }
 
-    private void addChildTransaction(Transaction transaction) {
-        if (childTransactions == null) {
-            childTransactions = new ArrayList<Transaction>();
-        }
+    public void addChildTransaction(Transaction transaction) {
         childTransactions.add(transaction);
+    }
+
+    public double totalSum() {
+        double sum = amount;
+        for (Transaction transaction : childTransactions) {
+            sum += transaction.totalSum();
+        }
+        return sum;
     }
 
     @Override

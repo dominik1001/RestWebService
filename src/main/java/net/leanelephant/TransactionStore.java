@@ -12,7 +12,7 @@ public class TransactionStore {
 
     private final Map<Long, Transaction> transactionIdMap = new HashMap<Long, Transaction>();
 
-    private final Map<String, List<Transaction>> transactionTypeMap = new HashMap<String, List<Transaction>>();
+    private final Map<String, List<Long>> transactionTypeMap = new HashMap<String, List<Long>>();
 
     public void addTransaction(Transaction transaction) throws TransactionExistsException, ParentTransactionDoesNotExistException {
         Transaction existingTransaction = transactionIdMap.get(transaction.getId());
@@ -25,30 +25,26 @@ public class TransactionStore {
             if (parentTransaction == null) {
                 throw new ParentTransactionDoesNotExistException();
             }
-            transaction.setParent(transaction);
+            transaction.setParent(parentTransaction);
+            parentTransaction.addChildTransaction(transaction);
         }
 
         transactionIdMap.put(transaction.getId(), transaction);
 
-        List<Transaction> typeList = transactionTypeMap.get(transaction.getType());
+        List<Long> typeList = transactionTypeMap.get(transaction.getType());
         if (typeList == null) {
-            typeList = new ArrayList<Transaction>();
+            typeList = new ArrayList<Long>();
             transactionTypeMap.put(transaction.getType(), typeList);
-
         }
-        typeList.add(transaction);
+        typeList.add(transaction.getId());
     }
 
     public List<Long> getTransactionsByType(String type) {
-        List<Transaction> typeList = transactionTypeMap.get(type);
+        List<Long> typeList = transactionTypeMap.get(type);
         if (typeList == null) {
-            typeList = new ArrayList<Transaction>();
+            typeList = new ArrayList<Long>();
         }
-        List<Long> result = new ArrayList<Long>();
-        for (Transaction transaction : typeList) {
-            result.add(transaction.getId());
-        }
-        return result;
+        return typeList;
     }
 
     public double getTransactionSum(Long transactionId) {
