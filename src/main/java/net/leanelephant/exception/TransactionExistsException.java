@@ -1,4 +1,6 @@
-package net.leanelephant;
+package net.leanelephant.exception;
+
+import net.leanelephant.Transaction;
 
 public class TransactionExistsException extends Exception {
 

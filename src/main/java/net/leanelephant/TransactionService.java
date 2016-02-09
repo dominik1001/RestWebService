@@ -1,6 +1,8 @@
 package net.leanelephant;
 
 import com.owlike.genson.Genson;
+import net.leanelephant.exception.ParentTransactionDoesNotExistException;
+import net.leanelephant.exception.TransactionExistsException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -44,6 +46,8 @@ public class TransactionService {
         try {
             transactionStore.addTransaction(transaction);
         } catch (TransactionExistsException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } catch (ParentTransactionDoesNotExistException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 

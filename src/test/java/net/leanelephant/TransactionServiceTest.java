@@ -63,8 +63,8 @@ public class TransactionServiceTest extends JerseyTest {
 
     @Test
     public void testGetTransactionsByType() {
-        putTransaction(new Transaction(10, 5000, "cars"));
-        putTransaction(new Transaction(11, 10000, "shopping"));
+        putTransaction(new Transaction(12, 5000, "cars"));
+        putTransaction(new Transaction(13, 10000, "shopping"));
 
         Response response = target("transactionservice/types/cars").request().get();
 
@@ -74,8 +74,8 @@ public class TransactionServiceTest extends JerseyTest {
 
     @Test
     public void testGetTransactionSum() {
-        putTransaction(new Transaction(10, 5000, "cars"));
-        putTransaction(new Transaction(11, 10000, "shopping"));
+        putTransaction(new Transaction(14, 5000, "cars"));
+        putTransaction(new Transaction(15, 10000, "shopping"));
 
         Response response = target("transactionservice/sum/10").request().get();
 
