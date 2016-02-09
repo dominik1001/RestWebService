@@ -8,28 +8,21 @@ import java.util.List;
 
 public class Transaction {
 
+    @JsonProperty("transaction_id")
     private Long id;
 
     private double amount;
 
     private String type;
 
-    @JsonIgnore
-    private Transaction parent;
-
     @JsonProperty("parent_id")
     private Long parentId;
 
     @JsonIgnore
+    private Transaction parent;
+
+    @JsonIgnore
     private final List<Transaction> childTransactions = new ArrayList<Transaction>();
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
 
     public Transaction() {
 
@@ -68,6 +61,13 @@ public class Transaction {
         this.amount = amount;
     }
 
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
 
     public String getType() {
         return type;
@@ -76,7 +76,6 @@ public class Transaction {
     public void setType(String type) {
         this.type = type;
     }
-
 
     public Transaction getParent() {
         return parent;

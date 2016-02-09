@@ -25,6 +25,7 @@ public class TransactionStore {
             if (parentTransaction == null) {
                 throw new ParentTransactionDoesNotExistException();
             }
+            // if we model it like that we should check for circular dependencies
             transaction.setParent(parentTransaction);
             parentTransaction.addChildTransaction(transaction);
         }

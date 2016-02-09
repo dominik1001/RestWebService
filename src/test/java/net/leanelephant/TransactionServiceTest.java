@@ -11,6 +11,9 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests could be improved by being more independent
+ */
 public class TransactionServiceTest extends JerseyTest {
 
     private void putTransaction(Transaction transaction) {

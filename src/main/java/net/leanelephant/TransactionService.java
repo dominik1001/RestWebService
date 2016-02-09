@@ -13,6 +13,7 @@ import java.util.List;
 @Path("/transactionservice")
 public class TransactionService {
 
+    // This can probably be improved by creating a singleton bean for the in-memory store.
     private static TransactionStore transactionStore = new TransactionStore();
 
     private final String statusOkJson;
@@ -26,9 +27,22 @@ public class TransactionService {
         }});
     }
 
+    /**
+     * Adds a transaction
+     *
+     * @param transaction         the transaction to add
+     * @param transactionIdString the transaction's id
+     * @return returns a 200 when everything went well
+     * Returns a 400 when
+     * - a transaction with the id already exists
+     * - the transaction's id is not null and does not equal the parameter id
+     * - the transaction has a parent transaction id that does not exist
+     * <p/>
+     * Runtime analysis: O(1)
+     */
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.TEXT_PLAIN})
+    @Produces({MediaType.APPLICATION_JSON})
     @Path("/transaction/{transaction_id}")
     public Response addTransaction(Transaction transaction, @PathParam("transaction_id") String transactionIdString) {
         Long transactionId;
@@ -54,6 +68,14 @@ public class TransactionService {
         return Response.ok(statusOkJson).build();
     }
 
+    /**
+     * A json list of all transaction ids that share the same type $type.
+     *
+     * @param type the type to search for
+     * @return returns a json array with all the ids
+     * <p/>
+     * Runtime analysis: O(1)
+     */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("/types/{type}")
@@ -62,6 +84,14 @@ public class TransactionService {
         return Response.ok(typeList.toArray()).build();
     }
 
+    /**
+     * A sum of all transactions that are transitively linked by their parent_id to $transaction_id.
+     *
+     * @param transactionIdString the transaction's id
+     * @return returns a json map with the sum
+     * <p/>
+     * Runtime analysis: O(m) (Worst Case; m is the depth of the transaction tree)
+     */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("/sum/{transaction_id}")
