@@ -1,6 +1,7 @@
 package net.leanelephant;
 
 import com.owlike.genson.annotation.JsonIgnore;
+import com.owlike.genson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +14,13 @@ public class Transaction {
 
     private String type;
 
+    @JsonIgnore
     private Transaction parent;
 
+    @JsonProperty("parent_id")
     private Long parentId;
 
+    @JsonIgnore
     private final List<Transaction> childTransactions = new ArrayList<Transaction>();
 
     public Long getParentId() {
@@ -73,7 +77,7 @@ public class Transaction {
         this.type = type;
     }
 
-    @JsonIgnore
+
     public Transaction getParent() {
         return parent;
     }
@@ -101,6 +105,8 @@ public class Transaction {
                 ", amount=" + amount +
                 ", type='" + type + '\'' +
                 ", parent=" + parent +
+                ", parentId=" + parentId +
+                ", childTransactions=" + childTransactions +
                 '}';
     }
 }
