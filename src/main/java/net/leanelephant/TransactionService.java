@@ -18,10 +18,9 @@ public class TransactionService {
 
     private final String statusOkJson;
 
-    private final Genson genson;
+    private final Genson genson = new Genson();
 
     public TransactionService() {
-        genson = new Genson();
         statusOkJson = genson.serialize(new HashMap<String, Object>() {{
             put("status", "ok");
         }});

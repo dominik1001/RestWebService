@@ -1,5 +1,6 @@
 package net.leanelephant;
 
+import com.owlike.genson.Genson;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
@@ -8,6 +9,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,10 +28,18 @@ public class TransactionServiceTest extends JerseyTest {
         return new ResourceConfig(TransactionService.class);
     }
 
+    private final Genson genson = new Genson();
+
+    private String statusOkJson;
+
     public void setUp() throws Exception {
         super.setUp();
         putTransaction(new Transaction(10L, 5000.0, "cars"));
         putTransaction(new Transaction(11L, 10000.0, "shopping", 10L));
+
+        statusOkJson = genson.serialize(new HashMap<String, Object>() {{
+            put("status", "ok");
+        }});
     }
 
     @Test
@@ -39,7 +50,7 @@ public class TransactionServiceTest extends JerseyTest {
         Response response = target("transactionservice/transaction/12").request().post(transactionEntity);
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals("{\"status\":\"ok\"}", response.readEntity(String.class));
+        assertEquals(statusOkJson, response.readEntity(String.class));
     }
 
     @Test
@@ -67,7 +78,8 @@ public class TransactionServiceTest extends JerseyTest {
         Response response = target("transactionservice/types/books").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals("[]", response.readEntity(String.class));
+        assertEquals(genson.serialize(new ArrayList<String>() {
+        }), response.readEntity(String.class));
     }
 
     @Test
@@ -75,7 +87,11 @@ public class TransactionServiceTest extends JerseyTest {
         Response response = target("transactionservice/types/cars").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals("[10]", response.readEntity(String.class));
+        assertEquals(genson.serialize(new ArrayList<Integer>() {
+            {
+                add(10);
+            }
+        }), response.readEntity(String.class));
     }
 
     @Test
@@ -83,7 +99,9 @@ public class TransactionServiceTest extends JerseyTest {
         Response response = target("transactionservice/sum/10").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals("{\"sum\":15000.0}", response.readEntity(String.class));
+        assertEquals(genson.serialize(new HashMap<String, Double>() {{
+            put("sum", 15000.0);
+        }}), response.readEntity(String.class));
     }
 
     @Test
@@ -91,7 +109,9 @@ public class TransactionServiceTest extends JerseyTest {
         Response response = target("transactionservice/sum/11").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals("{\"sum\":10000.0}", response.readEntity(String.class));
+        assertEquals(genson.serialize(new HashMap<String, Double>() {{
+            put("sum", 10000.0);
+        }}), response.readEntity(String.class));
     }
 
     @Test
@@ -99,7 +119,9 @@ public class TransactionServiceTest extends JerseyTest {
         Response response = target("transactionservice/sum/9").request().get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals("{\"sum\":0.0}", response.readEntity(String.class));
+        assertEquals(genson.serialize(new HashMap<String, Double>() {{
+            put("sum", 0.0);
+        }}), response.readEntity(String.class));
     }
 
 }
