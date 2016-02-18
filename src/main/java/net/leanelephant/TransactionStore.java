@@ -4,15 +4,15 @@ import net.leanelephant.exception.ParentTransactionDoesNotExistException;
 import net.leanelephant.exception.TransactionExistsException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TransactionStore {
 
-    private final Map<Long, Transaction> transactionIdMap = new HashMap<Long, Transaction>();
+    private final Map<Long, Transaction> transactionIdMap = new ConcurrentHashMap<Long, Transaction>();
 
-    private final Map<String, List<Long>> transactionTypeMap = new HashMap<String, List<Long>>();
+    private final Map<String, List<Long>> transactionTypeMap = new ConcurrentHashMap<String, List<Long>>();
 
     public void addTransaction(Transaction transaction) throws TransactionExistsException, ParentTransactionDoesNotExistException {
         Transaction existingTransaction = transactionIdMap.get(transaction.getId());
